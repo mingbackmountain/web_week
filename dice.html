@@ -1,0 +1,126 @@
+<html>
+<!--Thanakorn Pasangthien 6088109-->
+<style>
+    #dice {
+            font-size: 4.6rem;
+        }
+        
+        div {
+            text-align: center;
+        }
+        
+        .numberInput {
+            width: 100px;
+            height: 40px;
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        .box {
+            display: box;
+            height: 1000px;
+            display: -moz-box;
+            -moz-box-orient: horizontal;
+            display: -webkit-box;
+            -webkit-box-orient: horizontal;
+            display: box;
+            box-orient: horizontal;
+        }
+        
+        .box .column1 {
+            -moz-box-flex: 1.0;
+            -webkit-box-flex: 1.0;
+            -ms-flex: 1.0;
+            box-flex: 1.0;
+            background: #FDF3E7;
+        }
+        
+        .box .column2 {
+            -moz-box-flex: 1.0;
+            -webkit-box-flex: 1.0;
+            -ms-flex: 1.0;
+            box-flex: 1.0;
+        }
+        
+        #searchResult {
+            font-size: 1.5rem;
+            text-align: left;
+            padding-left: 30px
+        }
+    </style>
+<div class="box">
+    <div class="column1">
+        <br />
+        <h1>Dice Roller</h1>
+
+        <h2>Please input number of round</h2>
+        <input type="number" min="1" value="1" class="numberInput" id="roundInput">
+        <input id="rollbtn" type="button" class="numberInput" value="Roll">
+        <div id="dice"></div>
+    </div>
+    <div class="column2">
+        <br />
+        <h1>Search</h1>
+        <h2>Please input #round to search</h2>
+        <input type="number" min="1" value="1" class="numberInput2" id="SearchInput">
+        <input type="button" class="numberInput" value="Search" id="roundSearch">
+        <div id="searchResult"></div>
+    </div>
+</div>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#rollbtn").click(function () {
+            var number_round = $("#roundInput").val();
+            $("#dice").html(rollTheDice(number_round));
+        })
+
+
+        $("#roundSearch").click(function () {
+            var number_search = $("#SearchInput").val();
+            var temp = searchTheDice(number_search);
+            let string = ""
+            if (temp == null) {
+                string = "The sum of this round is less than 12"
+                $("#searchResult").html(string);
+            }
+            var test = temp.split(",")
+            string = "D1" + " = " + test[0] + "<br>" + "D2" + " = " + test[1] + "<br>" + "D3" + " = " + test[2]
+            $("#searchResult").html(string)
+
+        })
+    });
+
+    function rollTheDice(Round) {
+        var i, j, faceValue, output = '', diceCount = 3;
+        let dice = [];
+        let round = [];
+        for (j = 1; j <= Round; j++) {
+            output += j + "." + "&nbsp";
+            for (i = 0; i < diceCount; i++) {
+                faceValue = Math.floor((Math.random() * 6));
+                dice.push(faceValue + 1);
+                output += "&#x268" + faceValue + "; "; //Get dice face
+            }
+            var diceobj = [dice[0], dice[1], dice[2]]
+            round.push(diceobj);
+            output += "<br/>";
+            dice = [];
+        }
+        var result = []
+        for (let i = 0; i < round.length; i++) {
+            var sum = round[i][0] + round[i][1] + round[i][2]
+            if (sum >= 12) {
+                localStorage.setItem(i + 1, round[i])
+            }
+        }
+        return output;
+    }
+
+    function searchTheDice(Round) {
+        var temp = localStorage.getItem(Round);
+        return temp;
+    }
+</script>
+
+</html>
